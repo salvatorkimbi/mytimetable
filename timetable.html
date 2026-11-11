@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weekly Timetable · 168-Hour Plan</title>
+    <style>
+        :root {
+            --bg: #0f1115;
+            --surface: #171a21;
+            --surface-2: #1e222b;
+            --border: #2a2f3a;
+            --text: #e8ebf0;
+            --muted: #9aa3b2;
+            --accent: #4f8cff;
+            --accent-2: #22c55e;
+            --radius: 14px;
+            --shadow: 0 10px 30px rgba(0, 0, 0, .35);
+            --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+
+            /* Activity colors */
+            --c-sleep: #3b3f8f;
+            --c-uni: #2563eb;
+            --c-commute: #64748b;
+            --c-study: #7c3aed;
+            --c-odin: #0891b2;
+            --c-hack: #db2777;
+            --c-cyber: #059669;
+            --c-forex: #d97706;
+            --c-leisure: #65a30d;
+            --c-personal: #a16207;
+            --c-exercise: #dc2626;
+            --c-review: #9333ea;
+            --c-flex: #475569;
+            --c-breakfast: #b45309;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        body {
+            font-family: var(--font);
+            background:
+                radial-gradient(1200px 600px at 10% -10%, rgba(79, 140, 255, .12), transparent 60%),
+                radial-gradient(1000px 500px at 110% 10%, rgba(34, 197, 94, .08), transparent 60%),
+                var(--bg);
+            color: var(--text);
+            line-height: 1.55;
+            min-height: 100vh;
+            padding: 2rem 1rem 4rem;
+        }
+
+        .wrap {
+            max-width: 1180px;
+            margin: 0 auto
+        }
+
+        /* Header */
+        header.hero {
+            text-align: center;
+            padding: 1.5rem 1rem 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .badge {
+            display: inline-block;
+            font-size: .75rem;
+            letter-spacing: .14em;
+            text-transform: uppercase;
+            color: var(--accent);
+            border: 1px solid rgba(79, 140, 255, .4);
+            background: rgba(79, 140, 255, .08);
+            padding: .35rem .8rem;
+            border-radius: 999px;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        h1 {
+            font-size: clamp(1.8rem, 4vw, 2.8rem);
+            font-weight: 800;
+            letter-spacing: -.02em;
+            background: linear-gradient(180deg, #fff, #b8c4d8);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: .6rem;
+        }
+
+        .subtitle {
+            color: var(--muted);
+            max-width: 640px;
+            margin: 0 auto;
+            font-size: 1.02rem
+        }
+
+        /* Stat cards */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .stat {
+            background: linear-gradient(180deg, var(--surface-2), var(--surface));
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.4rem 1.2rem;
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+
+        .stat .num {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--accent);
+            letter-spacing: -.03em;
+            line-height: 1;
+        }
+
+        .stat .num.green {
+            color: var(--accent-2)
+        }
+
+        .stat .label {
+            font-size: .82rem;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            margin-top: .5rem;
+        }
+
+        /* Section headings */
+        section {
+            margin-bottom: 3rem
+        }
+
+        h2 {
+            font-size: 1.35rem;
+            font-weight: 700;
+            letter-spacing: -.01em;
+            margin-bottom: .35rem;
+            display: flex;
+            align-items: center;
+            gap: .6rem;
+        }
+
+        h2::before {
+            content: "";
+            width: 4px;
+            height: 22px;
+            border-radius: 2px;
+            background: var(--accent);
+        }
+
+        .section-note {
+            color: var(--muted);
+            font-size: .92rem;
+            margin-bottom: 1.2rem;
+            padding-left: 1rem
+        }
+
+        /* Tables */
+        .table-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: .95rem
+        }
+
+        thead th {
+            text-align: left;
+            padding: .85rem 1.2rem;
+            font-size: .78rem;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            color: var(--muted);
+            background: var(--surface-2);
+            border-bottom: 1px solid var(--border);
+            font-weight: 600;
+        }
+
+        tbody td {
+            padding: .75rem 1.2rem;
+            border-bottom: 1px solid rgba(42, 47, 58, .6);
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none
+        }
+
+        tbody tr:hover {
+            background: rgba(79, 140, 255, .05)
+        }
+
+        td.hours {
+            text-align: right;
+            font-variant-numeric: tabular-nums;
+            font-weight: 600;
+            color: var(--accent);
+            width: 90px;
+        }
+
+        tr.total td {
+            background: var(--surface-2);
+            font-weight: 700;
+            border-top: 2px solid var(--border);
+        }
+
+        tr.total td.hours {
+            color: var(--accent-2)
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: .5rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.2rem;
+        }
+
+        .tab {
+            font-family: var(--font);
+            font-size: .9rem;
+            font-weight: 600;
+            color: var(--muted);
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: .55rem 1.1rem;
+            border-radius: 999px;
+            cursor: pointer;
+            transition: all .18s ease;
+        }
+
+        .tab:hover {
+            color: var(--text);
+            border-color: #3a4150
+        }
+
+        .tab.active {
+            color: #fff;
+            background: linear-gradient(135deg, var(--accent), #3b6fd4);
+            border-color: transparent;
+            box-shadow: 0 4px 14px rgba(79, 140, 255, .35);
+        }
+
+        .tab .day-count {
+            font-size: .72rem;
+            opacity: .75;
+            margin-left: .35rem;
+        }
+
+        .panel {
+            display: none
+        }
+
+        .panel.active {
+            display: block;
+            animation: fade .25s ease
+        }
+
+        @keyframes fade {
+            from {
+                opacity: 0;
+                transform: translateY(6px)
+            }
+
+            to {
+                opacity: 1;
+                transform: none
+            }
+        }
+
+        .day-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: .5rem;
+            padding: 1rem 1.2rem;
+            background: linear-gradient(90deg, rgba(79, 140, 255, .12), transparent);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .day-header h3 {
+            font-size: 1.05rem;
+            font-weight: 700
+        }
+
+        .day-tag {
+            font-size: .74rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: .06em;
+            padding: .25rem .65rem;
+            border-radius: 999px;
+            background: rgba(79, 140, 255, .15);
+            color: var(--accent);
+        }
+
+        /* Activity chips in table */
+        .act {
+            display: inline-flex;
+            align-items: center;
+            gap: .5rem;
+            font-weight: 500;
+        }
+
+        .dot {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            flex: 0 0 auto;
+        }
+
+        /* Legend */
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: .6rem 1.2rem;
+            margin-top: 1rem;
+            padding: 1rem 1.2rem;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            font-size: .82rem;
+            color: var(--muted);
+        }
+
+        .legend span {
+            display: inline-flex;
+            align-items: center;
+            gap: .45rem
+        }
+
+        /* Learning targets */
+        .targets {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 1rem;
+        }
+
+        .target {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.1rem 1.2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .target::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: var(--tcolor, var(--accent));
+        }
+
+        .target .tname {
+            font-size: .85rem;
+            color: var(--muted);
+            margin-bottom: .3rem
+        }
+
+        .target .thours {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--text);
+            letter-spacing: -.02em
+        }
+
+        .target .thours small {
+            font-size: .8rem;
+            color: var(--muted);
+            font-weight: 500
+        }
+
+        /* Rules */
+        ol.rules {
+            list-style: none;
+            counter-reset: rule;
+            display: grid;
+            gap: .8rem
+        }
+
+        ol.rules li {
+            counter-increment: rule;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1rem 1.2rem 1rem 3.4rem;
+            position: relative;
+            font-size: .95rem;
+            color: #cdd4e0;
+        }
+
+        ol.rules li::before {
+            content: counter(rule);
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 1.7rem;
+            height: 1.7rem;
+            display: grid;
+            place-items: center;
+            background: rgba(79, 140, 255, .15);
+            color: var(--accent);
+            border-radius: 50%;
+            font-weight: 700;
+            font-size: .85rem;
+        }
+
+        footer {
+            text-align: center;
+            color: var(--muted);
+            font-size: .85rem;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border);
+        }
+
+        footer strong {
+            color: var(--accent-2)
+        }
+
+        @media (max-width:600px) {
+            body {
+                padding: 1rem .6rem 3rem
+            }
+
+            thead th,
+            tbody td {
+                padding: .6rem .8rem
+            }
+
+            .stat .num {
+                font-size: 1.8rem
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrap">
+
+        <header class="hero">
+            <div class="badge">Verified · 168 / 168 Hours</div>
+            <h1>Your Finalized Weekly Timetable</h1>
+            <p class="subtitle">A complete 168-hour plan balancing 18 hours of university classes, 6 hours commuting,
+                and 40 hours of combined academic and external learning — with sleep, exercise, and recovery protected.
+            </p>
+        </header>
+
+        <!-- Stat cards -->
+        <div class="stats">
+            <div class="stat">
+                <div class="num">168</div>
+                <div class="label">Total hours / week</div>
+            </div>
+            <div class="stat">
+                <div class="num green">15</div>
+                <div class="label">Flexible hours</div>
+            </div>
+            <div class="stat">
+                <div class="num">18</div>
+                <div class="label">University classes</div>
+            </div>
+            <div class="stat">
+                <div class="num">40</div>
+                <div class="label">Learning hours</div>
+            </div>
+        </div>
+
+        <!-- 1. Time budget -->
+        <section>
+            <h2>Weekly Time Budget</h2>
+            <p class="section-note">Every hour of the 168-hour week is accounted for.</p>
+            <div class="table-card">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Activity</th>
+                            <th style="text-align:right">Hours</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Sleep</td>
+                            <td class="hours">56</td>
+                        </tr>
+                        <tr>
+                            <td>University classes</td>
+                            <td class="hours">18</td>
+                        </tr>
+                        <tr>
+                            <td>Commuting</td>
+                            <td class="hours">6</td>
+                        </tr>
+                        <tr>
+                            <td>University module study</td>
+                            <td class="hours">10</td>
+                        </tr>
+                        <tr>
+                            <td>The Odin Project</td>
+                            <td class="hours">10</td>
+                        </tr>
+                        <tr>
+                            <td>MyFirstHack</td>
+                            <td class="hours">7</td>
+                        </tr>
+                        <tr>
+                            <td>Cyberium</td>
+                            <td class="hours">7</td>
+                        </tr>
+                        <tr>
+                            <td>Forex</td>
+                            <td class="hours">7</td>
+                        </tr>
+                        <tr>
+                            <td>Leisure</td>
+                            <td class="hours">7</td>
+                        </tr>
+                        <tr>
+                            <td>Meals and personal care</td>
+                            <td class="hours">21</td>
+                        </tr>
+                        <tr>
+                            <td>Exercise</td>
+                            <td class="hours">3</td>
+                        </tr>
+                        <tr>
+                            <td>Weekly review</td>
+                            <td class="hours">1</td>
+                        </tr>
+                        <tr>
+                            <td>Flexible / buffer</td>
+                            <td class="hours">15</td>
+                        </tr>
+                        <tr class="total">
+                            <td>Total</td>
+                            <td class="hours">168</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- 2. Daily timetable -->
+        <section>
+            <h2>Daily Timetable</h2>
+            <p class="section-note">Sleep every day: 11:00 PM – 7:00 AM. Select a day to view its schedule.</p>
+
+            <div class="tabs" id="tabs"></div>
+            <div id="panels"></div>
+
+            <div class="legend">
+                <span><i class="dot" style="background:var(--c-uni)"></i>University</span>
+                <span><i class="dot" style="background:var(--c-commute)"></i>Commute</span>
+                <span><i class="dot" style="background:var(--c-study)"></i>Module study</span>
+                <span><i class="dot" style="background:var(--c-odin)"></i>Odin Project</span>
+                <span><i class="dot" style="background:var(--c-hack)"></i>MyFirstHack</span>
+                <span><i class="dot" style="background:var(--c-cyber)"></i>Cyberium</span>
+                <span><i class="dot" style="background:var(--c-forex)"></i>Forex</span>
+                <span><i class="dot" style="background:var(--c-leisure)"></i>Leisure</span>
+                <span><i class="dot" style="background:var(--c-personal)"></i>Meals / care</span>
+                <span><i class="dot" style="background:var(--c-exercise)"></i>Exercise</span>
+                <span><i class="dot" style="background:var(--c-review)"></i>Review</span>
+                <span><i class="dot" style="background:var(--c-flex)"></i>Flexible</span>
+            </div>
+        </section>
+
+        <!-- 3. Learning targets -->
+        <section>
+            <h2>Learning Targets</h2>
+            <p class="section-note">Your weekly technical and academic development allocation.</p>
+            <div class="targets">
+                <div class="target" style="--tcolor:var(--c-odin)">
+                    <div class="tname">The Odin Project</div>
+                    <div class="thours">10<small>h</small></div>
+                </div>
+                <div class="target" style="--tcolor:var(--c-study)">
+                    <div class="tname">University study</div>
+                    <div class="thours">10<small>h</small></div>
+                </div>
+                <div class="target" style="--tcolor:var(--c-hack)">
+                    <div class="tname">MyFirstHack</div>
+                    <div class="thours">7<small>h</small></div>
+                </div>
+                <div class="target" style="--tcolor:var(--c-cyber)">
+                    <div class="tname">Cyberium</div>
+                    <div class="thours">7<small>h</small></div>
+                </div>
+                <div class="target" style="--tcolor:var(--c-forex)">
+                    <div class="tname">Forex</div>
+                    <div class="thours">7<small>h</small></div>
+                </div>
+                <div class="target" style="--tcolor:var(--c-leisure)">
+                    <div class="tname">Leisure</div>
+                    <div class="thours">7<small>h</small></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. Flexible hours -->
+        <section>
+            <h2>How to Use Your 15 Flexible Hours</h2>
+            <p class="section-note">Deliberately unassigned buffer — spend only when needed.</p>
+            <div class="table-card">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Purpose</th>
+                            <th style="text-align:right">Hours</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Unexpected university work</td>
+                            <td class="hours">5</td>
+                        </tr>
+                        <tr>
+                            <td>Catch-up on unfinished learning</td>
+                            <td class="hours">4</td>
+                        </tr>
+                        <tr>
+                            <td>Recovery and additional rest</td>
+                            <td class="hours">3</td>
+                        </tr>
+                        <tr>
+                            <td>Personal errands and unexpected events</td>
+                            <td class="hours">3</td>
+                        </tr>
+                        <tr class="total">
+                            <td>Total</td>
+                            <td class="hours">15</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- 5. Rules -->
+        <section>
+            <h2>Weekly Execution Rules</h2>
+            <p class="section-note">Guardrails that keep the plan working.</p>
+            <ol class="rules">
+                <li>Protect your eight hours of sleep. Do not sacrifice sleep to complete unfinished lessons.</li>
+                <li>During technical learning, prioritize coding, labs, exercises and projects over watching tutorials
+                    continuously.</li>
+                <li>Keep your university module study separate from your external courses.</li>
+                <li>Use Thursday and Saturday for substantial practical work.</li>
+                <li>Use Sunday to assess your progress and prepare the next week.</li>
+                <li>Forex time is a maximum learning/trading allocation, not an obligation to enter trades.</li>
+            </ol>
+        </section>
+
+        <footer>
+            <strong>168 / 168 hours</strong> · Weekly accounting verified.<br>
+            Includes all classes, six commuting hours, 40 hours of combined academic and external learning, forex,
+            leisure, personal care, exercise and flexibility.
+        </footer>
+    </div>
+
+    <script>
+        const COLORS = {
+            "University classes": "var(--c-uni)",
+            "Commute": "var(--c-commute)",
+            "University module study": "var(--c-study)",
+            "The Odin Project": "var(--c-odin)",
+            "MyFirstHack": "var(--c-hack)",
+            "Cyberium": "var(--c-cyber)",
+            "Forex": "var(--c-forex)",
+            "Leisure": "var(--c-leisure)",
+            "Exercise": "var(--c-exercise)",
+            "Weekly review": "var(--c-review)",
+            "Flexible time": "var(--c-flex)",
+            "Breakfast and preparation": "var(--c-personal)",
+            "Breakfast and personal preparation": "var(--c-personal)",
+            "Breakfast": "var(--c-personal)",
+            "Lunch": "var(--c-personal)",
+            "Lunch and personal care": "var(--c-personal)",
+            "Dinner": "var(--c-personal)",
+            "Dinner and personal care": "var(--c-personal)",
+            "Wind down": "var(--c-personal)",
+            "Weekly review and planning": "var(--c-review)",
+        };
+
+        const days = [
+            {
+                name: "Monday", tag: "University · AM & PM", rows: [
+                    ["7:00–7:30 AM", "Breakfast and preparation"],
+                    ["7:30–8:00 AM", "Commute"],
+                    ["8:00–9:00 AM", "Flexible time"],
+                    ["9:00 AM–12:00 PM", "University classes"],
+                    ["12:00–12:30 PM", "Commute"],
+                    ["12:30–1:30 PM", "Lunch and personal care"],
+                    ["1:30–2:00 PM", "Commute"],
+                    ["2:00–5:00 PM", "University classes"],
+                    ["5:00–5:30 PM", "Commute"],
+                    ["5:30–6:30 PM", "Dinner and personal care"],
+                    ["6:30–8:30 PM", "University module study"],
+                    ["8:30–9:30 PM", "Forex"],
+                    ["9:30–10:30 PM", "Leisure"],
+                    ["10:30–11:00 PM", "Wind down"],
+                ]
+            },
+            {
+                name: "Tuesday", tag: "University · AM & PM", rows: [
+                    ["7:00–7:30 AM", "Breakfast and preparation"],
+                    ["7:30–8:00 AM", "Commute"],
+                    ["8:00–9:00 AM", "Flexible time"],
+                    ["9:00 AM–12:00 PM", "University classes"],
+                    ["12:00–12:30 PM", "Commute"],
+                    ["12:30–1:30 PM", "Lunch"],
+                    ["1:30–2:00 PM", "Commute"],
+                    ["2:00–5:00 PM", "University classes"],
+                    ["5:00–5:30 PM", "Commute"],
+                    ["5:30–6:30 PM", "Dinner and personal care"],
+                    ["6:30–7:30 PM", "Forex"],
+                    ["7:30–8:30 PM", "University module study"],
+                    ["8:30–9:30 PM", "Leisure"],
+                    ["9:30–10:30 PM", "Flexible time"],
+                    ["10:30–11:00 PM", "Wind down"],
+                ]
+            },
+            {
+                name: "Wednesday", tag: "University · AM only", rows: [
+                    ["7:00–8:30 AM", "Breakfast and personal preparation"],
+                    ["8:30–9:00 AM", "Commute"],
+                    ["9:00 AM–12:00 PM", "University classes"],
+                    ["12:00–12:30 PM", "Commute"],
+                    ["12:30–1:30 PM", "Lunch"],
+                    ["1:30–4:00 PM", "The Odin Project"],
+                    ["4:00–5:00 PM", "MyFirstHack"],
+                    ["5:00–6:00 PM", "Forex"],
+                    ["6:00–6:30 PM", "Dinner"],
+                    ["6:30–7:30 PM", "University module study"],
+                    ["7:30–8:30 PM", "Leisure"],
+                    ["8:30–11:00 PM", "Flexible time"],
+                ]
+            },
+            {
+                name: "Thursday", tag: "No university classes", rows: [
+                    ["7:00–8:00 AM", "Breakfast and preparation"],
+                    ["8:00–10:00 AM", "University module study"],
+                    ["10:00 AM–1:00 PM", "The Odin Project"],
+                    ["1:00–2:00 PM", "Lunch"],
+                    ["2:00–4:00 PM", "Cyberium"],
+                    ["4:00–5:00 PM", "Exercise"],
+                    ["5:00–6:00 PM", "Forex"],
+                    ["6:00–7:00 PM", "Dinner and personal care"],
+                    ["7:00–9:00 PM", "MyFirstHack"],
+                    ["9:00–10:00 PM", "Leisure"],
+                    ["10:00–11:00 PM", "Flexible time"],
+                ]
+            },
+            {
+                name: "Friday", tag: "University · AM only", rows: [
+                    ["7:00–8:00 AM", "Breakfast and preparation"],
+                    ["8:00–8:30 AM", "Flexible time"],
+                    ["8:30–9:00 AM", "Commute"],
+                    ["9:00 AM–12:00 PM", "University classes"],
+                    ["12:00–12:30 PM", "Commute"],
+                    ["12:30–1:30 PM", "Lunch"],
+                    ["1:30–3:30 PM", "The Odin Project"],
+                    ["3:30–5:30 PM", "Cyberium"],
+                    ["5:30–6:30 PM", "Forex"],
+                    ["6:30–7:30 PM", "Dinner and personal care"],
+                    ["7:30–8:30 PM", "University module study"],
+                    ["8:30–9:30 PM", "Leisure"],
+                    ["9:30–11:00 PM", "Flexible time"],
+                ]
+            },
+            {
+                name: "Saturday", tag: "Independent development day", rows: [
+                    ["7:00–8:00 AM", "Breakfast and preparation"],
+                    ["8:00–10:00 AM", "University module study"],
+                    ["10:00 AM–12:00 PM", "The Odin Project"],
+                    ["12:00–1:00 PM", "Lunch"],
+                    ["1:00–3:00 PM", "MyFirstHack"],
+                    ["3:00–4:00 PM", "Exercise"],
+                    ["4:00–5:00 PM", "Forex"],
+                    ["5:00–6:00 PM", "Leisure"],
+                    ["6:00–7:00 PM", "Dinner"],
+                    ["7:00–8:00 PM", "Cyberium"],
+                    ["8:00–11:00 PM", "Flexible time"],
+                ]
+            },
+            {
+                name: "Sunday", tag: "Revision and preparation day", rows: [
+                    ["7:00–8:00 AM", "Breakfast and preparation"],
+                    ["8:00–9:00 AM", "University module study"],
+                    ["9:00–9:30 AM", "The Odin Project"],
+                    ["9:30–11:30 AM", "MyFirstHack"],
+                    ["11:30 AM–12:30 PM", "Cyberium"],
+                    ["12:30–1:30 PM", "Lunch"],
+                    ["1:30–2:30 PM", "Cyberium"],
+                    ["2:30–3:30 PM", "Forex"],
+                    ["3:30–4:30 PM", "Leisure"],
+                    ["4:30–5:30 PM", "Exercise"],
+                    ["5:30–6:30 PM", "Dinner and personal care"],
+                    ["6:30–7:30 PM", "Weekly review and planning"],
+                    ["7:30–11:00 PM", "Flexible time"],
+                ]
+            },
+        ];
+
+        const tabsEl = document.getElementById("tabs");
+        const panelsEl = document.getElementById("panels");
+
+        days.forEach((day, i) => {
+            // Tab
+            const tab = document.createElement("button");
+            tab.className = "tab" + (i === 0 ? " active" : "");
+            tab.innerHTML = day.name + '<span class="day-count">' + day.rows.length + '</span>';
+            tab.addEventListener("click", () => {
+                document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+                document.querySelectorAll(".panel").forEach(p => p.classList.remove("active"));
+                tab.classList.add("active");
+                document.getElementById("panel-" + i).classList.add("active");
+            });
+            tabsEl.appendChild(tab);
+
+            // Panel
+            const panel = document.createElement("div");
+            panel.className = "panel" + (i === 0 ? " active" : "");
+            panel.id = "panel-" + i;
+
+            let rowsHTML = day.rows.map(([time, act]) => {
+                const color = COLORS[act] || "var(--accent)";
+                return `<tr>
+      <td style="white-space:nowrap;color:var(--muted);font-variant-numeric:tabular-nums;width:170px">${time}</td>
+      <td><span class="act"><i class="dot" style="background:${color}"></i>${act}</span></td>
+    </tr>`;
+            }).join("");
+
+            panel.innerHTML = `
+    <div class="table-card">
+      <div class="day-header">
+        <h3>${day.name}</h3>
+        <span class="day-tag">${day.tag}</span>
+      </div>
+      <table>
+        <thead><tr><th>Time</th><th>Activity</th></tr></thead>
+        <tbody>${rowsHTML}</tbody>
+      </table>
+    </div>`;
+            panelsEl.appendChild(panel);
+        });
+    </script>
+</body>
+
+</html>
