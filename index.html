@@ -243,6 +243,27 @@
     flex:0 0 auto;
   }
 
+  /* Activity links */
+  a.act-link{
+    color:inherit;
+    text-decoration:none;
+    border-bottom:1px dashed rgba(79,140,255,.45);
+    transition:color .15s ease, border-color .15s ease;
+    display:inline-flex;
+    align-items:center;
+    gap:.35rem;
+  }
+  a.act-link:hover{
+    color:var(--accent);
+    border-bottom-color:var(--accent);
+  }
+  a.act-link::after{
+    content:"↗";
+    font-size:.75em;
+    opacity:.55;
+    transform:translateY(-1px);
+  }
+
   /* Legend */
   .legend{
     display:flex;
@@ -271,6 +292,14 @@
     padding:1.1rem 1.2rem;
     position:relative;
     overflow:hidden;
+    text-decoration:none;
+    color:inherit;
+    display:block;
+    transition:transform .15s ease, border-color .15s ease;
+  }
+  .target:hover{
+    transform:translateY(-2px);
+    border-color:rgba(79,140,255,.45);
   }
   .target::after{
     content:"";
@@ -279,7 +308,15 @@
     width:4px;
     background:var(--tcolor,var(--accent));
   }
-  .target .tname{font-size:.85rem;color:var(--muted);margin-bottom:.3rem}
+  .target .tname{
+    font-size:.85rem;color:var(--muted);margin-bottom:.3rem;
+    display:flex;align-items:center;gap:.3rem;
+  }
+  .target .tname .arrow{
+    font-size:.75rem;opacity:0;transform:translateX(-3px);
+    transition:opacity .15s ease, transform .15s ease;
+  }
+  .target:hover .tname .arrow{opacity:.8;transform:none}
   .target .thours{font-size:1.6rem;font-weight:800;color:var(--text);letter-spacing:-.02em}
   .target .thours small{font-size:.8rem;color:var(--muted);font-weight:500}
 
@@ -353,13 +390,13 @@
         <thead><tr><th>Activity</th><th style="text-align:right">Hours</th></tr></thead>
         <tbody>
           <tr><td>Sleep</td><td class="hours">56</td></tr>
-          <tr><td>University classes</td><td class="hours">18</td></tr>
+          <tr><td><a class="act-link" href="https://elearning5.ur.ac.rw/" target="_blank" rel="noopener">University classes</a></td><td class="hours">18</td></tr>
           <tr><td>Commuting</td><td class="hours">6</td></tr>
-          <tr><td>University module study</td><td class="hours">10</td></tr>
-          <tr><td>The Odin Project</td><td class="hours">10</td></tr>
-          <tr><td>MyFirstHack</td><td class="hours">7</td></tr>
-          <tr><td>Cyberium</td><td class="hours">7</td></tr>
-          <tr><td>Forex</td><td class="hours">7</td></tr>
+          <tr><td><a class="act-link" href="https://elearning5.ur.ac.rw/" target="_blank" rel="noopener">University module study</a></td><td class="hours">10</td></tr>
+          <tr><td><a class="act-link" href="https://www.theodinproject.com" target="_blank" rel="noopener">The Odin Project</a></td><td class="hours">10</td></tr>
+          <tr><td><a class="act-link" href="https://myfirsthack.com/" target="_blank" rel="noopener">MyFirstHack</a></td><td class="hours">7</td></tr>
+          <tr><td><a class="act-link" href="https://cyberium.academy/" target="_blank" rel="noopener">Cyberium</a></td><td class="hours">7</td></tr>
+          <tr><td><a class="act-link" href="https://www.tradingview.com" target="_blank" rel="noopener">Forex</a></td><td class="hours">7</td></tr>
           <tr><td>Leisure</td><td class="hours">7</td></tr>
           <tr><td>Meals and personal care</td><td class="hours">21</td></tr>
           <tr><td>Exercise</td><td class="hours">3</td></tr>
@@ -398,14 +435,32 @@
   <!-- 3. Learning targets -->
   <section>
     <h2>Learning Targets</h2>
-    <p class="section-note">Your weekly technical and academic development allocation.</p>
+    <p class="section-note">Your weekly technical and academic development allocation — click a card to open the platform.</p>
     <div class="targets">
-      <div class="target" style="--tcolor:var(--c-odin)"><div class="tname">The Odin Project</div><div class="thours">10<small>h</small></div></div>
-      <div class="target" style="--tcolor:var(--c-study)"><div class="tname">University study</div><div class="thours">10<small>h</small></div></div>
-      <div class="target" style="--tcolor:var(--c-hack)"><div class="tname">MyFirstHack</div><div class="thours">7<small>h</small></div></div>
-      <div class="target" style="--tcolor:var(--c-cyber)"><div class="tname">Cyberium</div><div class="thours">7<small>h</small></div></div>
-      <div class="target" style="--tcolor:var(--c-forex)"><div class="tname">Forex</div><div class="thours">7<small>h</small></div></div>
-      <div class="target" style="--tcolor:var(--c-leisure)"><div class="tname">Leisure</div><div class="thours">7<small>h</small></div></div>
+      <a class="target" style="--tcolor:var(--c-odin)" href="https://www.theodinproject.com" target="_blank" rel="noopener">
+        <div class="tname">The Odin Project <span class="arrow">↗</span></div>
+        <div class="thours">10<small>h</small></div>
+      </a>
+      <a class="target" style="--tcolor:var(--c-study)" href="https://elearning5.ur.ac.rw/" target="_blank" rel="noopener">
+        <div class="tname">University study <span class="arrow">↗</span></div>
+        <div class="thours">10<small>h</small></div>
+      </a>
+      <a class="target" style="--tcolor:var(--c-hack)" href="https://myfirsthack.com/" target="_blank" rel="noopener">
+        <div class="tname">MyFirstHack <span class="arrow">↗</span></div>
+        <div class="thours">7<small>h</small></div>
+      </a>
+      <a class="target" style="--tcolor:var(--c-cyber)" href="https://cyberium.academy/" target="_blank" rel="noopener">
+        <div class="tname">Cyberium <span class="arrow">↗</span></div>
+        <div class="thours">7<small>h</small></div>
+      </a>
+      <a class="target" style="--tcolor:var(--c-forex)" href="https://www.tradingview.com" target="_blank" rel="noopener">
+        <div class="tname">Forex <span class="arrow">↗</span></div>
+        <div class="thours">7<small>h</small></div>
+      </a>
+      <div class="target" style="--tcolor:var(--c-leisure)">
+        <div class="tname">Leisure</div>
+        <div class="thours">7<small>h</small></div>
+      </div>
     </div>
   </section>
 
@@ -469,6 +524,16 @@ const COLORS = {
   "Dinner and personal care":"var(--c-personal)",
   "Wind down":"var(--c-personal)",
   "Weekly review and planning":"var(--c-review)",
+};
+
+// Map exact activity label -> external URL
+const LINKS = {
+  "University classes": "https://elearning5.ur.ac.rw/",
+  "University module study": "https://elearning5.ur.ac.rw/",
+  "The Odin Project": "https://www.theodinproject.com",
+  "MyFirstHack": "https://myfirsthack.com/",
+  "Cyberium": "https://cyberium.academy/",
+  "Forex": "https://www.tradingview.com",
 };
 
 const days = [
@@ -600,9 +665,13 @@ days.forEach((day, i) => {
 
   let rowsHTML = day.rows.map(([time, act]) => {
     const color = COLORS[act] || "var(--accent)";
+    const url = LINKS[act];
+    const label = url
+      ? `<a class="act-link" href="${url}" target="_blank" rel="noopener">${act}</a>`
+      : act;
     return `<tr>
       <td style="white-space:nowrap;color:var(--muted);font-variant-numeric:tabular-nums;width:170px">${time}</td>
-      <td><span class="act"><i class="dot" style="background:${color}"></i>${act}</span></td>
+      <td><span class="act"><i class="dot" style="background:${color}"></i>${label}</span></td>
     </tr>`;
   }).join("");
 
